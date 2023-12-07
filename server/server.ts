@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import productsRouter from "./routes/productsRouter";
+import "./db";
 
 const PORT = 8080;
 const app = express();
