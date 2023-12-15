@@ -1,9 +1,13 @@
 import mongoose from "mongoose";
 
-const url = 'mongodb+srv://Uros:nhqpylRi4OM918Ns@cluster0.hx56vik.mongodb.net/?retryWrites=true&w=majority';
+const connectDB = async () => {
+    try {
+        const conn = await mongoose.connect(`${process.env.MONGODB_URI}`);
+        console.log(`MongoDB connected: ${conn.connection.host}`)
+    } catch (error) {
+        console.log(error)
+        process.exit(1);
+    }
+};
 
-mongoose.connect(url)
-    .then(() => console.log("Database connected successfuly..."))
-    .catch((error) => {
-        console.log("Database ERROR: \n" + error);
-    });
+export default connectDB;
