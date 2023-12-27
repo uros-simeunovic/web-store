@@ -1,8 +1,8 @@
 export type UserType = {
-    firstName: String,
-    lastName: String,
-    email: String,
-    mobile: String,
-    password: String,
+    firstName: string,
+    lastName: string,
+    email: string,
+    mobile: string,
+    password: string,
     createdAt: Date
 }

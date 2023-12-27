@@ -3,20 +3,20 @@ import { UserType } from "../types/userType";
 
 var userSchema = new mongoose.Schema<UserType>({
     firstName:{
-        type:String,
+        type: String,
         required:true,
     },
     lastName:{
-        type:String,
+        type: String,
         required:true,
     },
     email:{
-        type:String,
+        type: String,
         required:true,
         unique:true,
     },
     mobile:{
-        type:String,
+        type: String,
         required:true,
         unique:true,
     },
@@ -26,4 +26,6 @@ var userSchema = new mongoose.Schema<UserType>({
     },
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+export default User;

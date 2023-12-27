@@ -4,7 +4,6 @@ import { ProductType } from "../types/productType";
 const productSchema = new mongoose.Schema<ProductType>({
     name: {
         type: String,
-        unique: true,
         required: true
     },
     price: {

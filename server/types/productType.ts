@@ -1,7 +1,7 @@
 export type ProductType = {
-    name: String,
+    name: string,
     price: number,
-    images: String[],
-    categories: String[],
+    images: string[],
+    categories: string[],
     createdAt: Date
 }
