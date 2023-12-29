@@ -1,6 +1,6 @@
 export type UserType = {
-    firstName: string,
-    lastName: string,
+    firstname: string,
+    lastname: string,
     email: string,
     mobile: string,
     password: string,
