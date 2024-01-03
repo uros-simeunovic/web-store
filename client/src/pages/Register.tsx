@@ -1,131 +1,180 @@
-import axios from 'axios';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { useForm } from "react-hook-form";
+import { useMutation } from "react-query";
+import { useAppContext } from "../AppContext";
 
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export type RegistrationFormData = {
+  firstname: string;
+  lastname: string;
+  email: string;
+  mobile: string;
+  password: string;
+};
 
 export default function Register() {
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [password, setPassword] = useState("");
+  const { showToast } = useAppContext();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegistrationFormData>();
 
-    const user = {
-      firstname,
-      lastname,
-      email,
-      mobile,
-      password
-    };
+  const mutation = useMutation({
+    mutationFn: async (data: RegistrationFormData) => {
+      const response = await fetch(
+        `${VITE_API_BASE_URL}/api/v1/auth/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
-    const response = await axios.post("http://localhost:8080/api/v1/auth/register", user);
-    console.log(response);
-  };
+      const responseBody = await response.json();
+
+      if (!response.ok) {
+        throw new Error(responseBody.message);
+      }
+    },
+    onSuccess() {
+      showToast({ message: "Registration successful", type: "SUCCESS" });
+    },
+    onError(error: Error) {
+      showToast({ message: error.message, type: "ERROR" });
+    },
+  });
+
+  const onSubmit = handleSubmit((data) => {
+    mutation.mutate(data);
+  });
 
   return (
     <Container component="main" maxWidth="xs">
-      <CssBaseline />
       <Box
+        component="form"
+        noValidate
+        onSubmit={onSubmit}
         sx={{
-          marginTop: 10,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          marginTop: 10,
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
-        </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Register
         </Typography>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="given-name"
-                name="firstName"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-                onChange={(e) => setFirstname(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="family-name"
-                onChange={(e) => setLastname(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                id="mobile"
-                label="Mobile number"
-                name="mobile"
-                autoComplete="mobile"
-                onChange={(e) => setMobile(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="firstname"
+              label="First Name"
+              autoComplete="firstname"
+              autoFocus
+              {...register("firstname", { required: "This field is required" })}
+            />
+            {errors.firstname && (
+              <Typography component="span" color="red">
+                {errors.firstname.message}
+              </Typography>
+            )}
           </Grid>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2 }}
-          >
-            Sign Up
-          </Button>
-          <Grid container justifyContent="flex-end">
-            <Grid item>
-              <Link to="/login">Already have an account?</Link>
-            </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="lastname"
+              label="Last Name"
+              autoComplete="lastname"
+              autoFocus
+              {...register("lastname", { required: "This field is required" })}
+            />
+            {errors.lastname && (
+              <Typography component="span" color="red">
+                {errors.lastname.message}
+              </Typography>
+            )}
           </Grid>
-        </Box>
+          <Grid item xs={12}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email"
+              autoComplete="email"
+              autoFocus
+              {...register("email", { required: "This field is required" })}
+            />
+            {errors.email && (
+              <Typography component="span" color="red">
+                {errors.email.message}
+              </Typography>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="mobile"
+              label="Mobile"
+              autoComplete="mobile"
+              autoFocus
+              {...register("mobile", { required: "This field is required" })}
+            />
+            {errors.mobile && (
+              <Typography component="span" color="red">
+                {errors.mobile.message}
+              </Typography>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              margin="normal"
+              required
+              type="password"
+              fullWidth
+              id="password"
+              label="Password"
+              autoComplete="password"
+              autoFocus
+              {...register("password", {
+                required: "This field is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 characters",
+                },
+              })}
+            />
+            {errors.password && (
+              <Typography component="span" color="red">
+                {errors.password.message}
+              </Typography>
+            )}
+          </Grid>
+        </Grid>
+        <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
+          Register
+        </Button>
       </Box>
+      <Typography variant="h1">{mutation.status}</Typography>
     </Container>
   );
 }
