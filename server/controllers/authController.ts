@@ -11,7 +11,7 @@ const register = async (req: Request, res: Response) => {
     
         if (user) {
             return res.status(500).json({
-                message: "User already exists"
+                message: "User already exists!"
             });
         }
 
@@ -27,7 +27,7 @@ const register = async (req: Request, res: Response) => {
 
         const savedUser = await newUser.save();
         res.status(200).json({
-            message: "Registration successful",
+            message: "Registration successful!",
             user: savedUser
         });
     } catch (error) {
@@ -67,7 +67,8 @@ const login = async (req: Request, res: Response) => {
             httpOnly: true,
             secure: false,
             maxAge: 86400000,
-        })
+        });
+        
         res.status(200).json({ userId: user._id});
     } catch (error) {
         console.log(error)
